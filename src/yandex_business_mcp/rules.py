@@ -107,7 +107,7 @@ def check_branch(b: dict, chain_rubrics: set[str]) -> list[Issue]:
         for url in _strings(b.get(key)):
             if not re.match(r"^https?://", url):
                 err(f"{key} must start with http:// or https://: {url!r}")
-            elif url != url.lower():
+            elif (bare := re.sub(r"%[0-9A-Fa-f]{2}", "", url)) != bare.lower():
                 warn(f"{key} should be lowercase: {url!r}")
             if "utm_" in url:
                 warn(f"{key} has UTM tags (allowed only with active ads): {url!r}")

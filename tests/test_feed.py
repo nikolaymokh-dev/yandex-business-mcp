@@ -93,3 +93,10 @@ def test_mcp_diff_and_list(ws):
     server.ybiz_update_branch("770704034", {"email": ["new@yakor-anapa.ru"]})
     assert server.ybiz_diff()["changed"] == {"770704034": ["email"]}
     assert {b["company-id"] for b in server.ybiz_list_branches()} == {"770704034", "7707040070"}
+
+
+def test_percent_encoding_is_not_uppercase():
+    b = parse_feed(FIXTURE)[1] | {"add-url": ["https://www.facebook.com/pages/%D0%A1%D0%9F-x/155"]}
+    assert not any("lowercase" in str(i) for i in check_feed([b], {"184106414"}))
+    b["add-url"] = ["https://Example.ru/"]
+    assert any("lowercase" in str(i) for i in check_feed([b], {"184106414"}))
